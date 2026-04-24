@@ -1,0 +1,13 @@
+{
+  "name": "tap-counter",
+  "version": "1.0.0",
+  "description": "A simple web app to count taps or clicks",
+  "main": "index.html",
+  "scripts": {
+    "start": "python server.py",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": ["tap", "counter", "webapp"],
+  "author": "",
+  "license": "MIT"
+}

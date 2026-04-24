@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap Counter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+        }
+        #timer {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        #counter {
+            font-size: 4em;
+            margin: 20px 0;
+            color: #4CAF50;
+        }
+        .button-container {
+            display: flex;
+            gap: 15px;
+        }
+        #tapButton, #resetButton {
+            font-size: 1.5em;
+            padding: 20px 40px;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #tapButton {
+            background-color: #4CAF50;
+        }
+        #resetButton {
+            background-color: #f44336;
+        }
+        #tapButton:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        #resetButton:hover {
+            background-color: #da190b;
+            transform: scale(1.05);
+        }
+        #tapButton:active, #resetButton:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <h1>Tap Counter</h1>
+    <div id="timer">00:00:00</div>
+    <div id="counter">0</div>
+    <div class="button-container">
+        <button id="tapButton" onclick="incrementCounter()">Tap Me!</button>
+        <button id="resetButton" onclick="resetAll()">Reset</button>
+    </div>
+    <audio id="tapSound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU="></audio>
+    
+    <script>
+        let count = 0;
+        let startTime = Date.now();
+        let timerInterval;
+        let isRunning = true;
+        
+        function playTapSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+        
+        function updateTimer() {
+            if (!isRunning) return;
+            
+            const elapsed = Date.now() - startTime;
+            const hours = Math.floor(elapsed / 3600000);
+            const minutes = Math.floor((elapsed % 3600000) / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            document.getElementById('timer').textContent = 
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0');
+        }
+        
+        function incrementCounter() {
+            if (!isRunning) {
+                startTime = Date.now();
+                isRunning = true;
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+            count++;
+            document.getElementById('counter').textContent = count;
+            playTapSound();
+        }
+        
+        function resetAll() {
+            count = 0;
+            startTime = Date.now();
+            isRunning = true;
+            document.getElementById('counter').textContent = count;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+        
+        timerInterval = setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
