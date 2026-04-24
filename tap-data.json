@@ -1,0 +1,24 @@
+{
+  "appName": "Tap Counter",
+  "version": "1.0.0",
+  "features": [
+    "Tap counter",
+    "Timer",
+    "Sound effect",
+    "Reset functionality"
+  ],
+  "sampleData": [
+    {
+      "sessionId": 1,
+      "taps": 42,
+      "durationSeconds": 120,
+      "date": "2026-04-25"
+    },
+    {
+      "sessionId": 2,
+      "taps": 107,
+      "durationSeconds": 240,
+      "date": "2026-04-25"
+    }
+  ]
+}
